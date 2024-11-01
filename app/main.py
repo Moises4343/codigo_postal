@@ -1,10 +1,11 @@
 from fastapi import FastAPI
-from app.routes import codigo_postal
+from app.routes import codigo_postal, actualizar_codigo
 
 
 app = FastAPI()
 
 app.include_router(codigo_postal.router)
+app.include_router(actualizar_codigo.router)
 
 if __name__ == '__main__':
     import uvicorn
