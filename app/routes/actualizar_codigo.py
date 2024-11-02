@@ -5,6 +5,7 @@ from app.db.database import get_db
 import pandas as pd
 import numpy as np
 from io import BytesIO
+from sqlalchemy import text
 
 router = APIRouter()
 
@@ -65,24 +66,19 @@ async def actualizar_datos(archivo: UploadFile = File(None), db: Session = Depen
         raise HTTPException(status_code=400, detail=f"Error al procesar el archivo: {str(e)}")
 
     try:
-        db.query(CodigoPostal).delete()
+        db.execute(text("TRUNCATE TABLE servicio_postal"))
         db.commit()
-        print("Datos existentes retirados de la tabla en la base de datos.")
+        print("Datos existentes eliminados y contador de auto-incremento reiniciado.")
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Error al eliminar datos existentes: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error al eliminar datos existentes o reiniciar el ID: {str(e)}")
 
     records = df.to_dict(orient='records')
-    codigos_postales_nuevos = []
-    for record in records:
-        record_filtered = {key: record.get(key, None) for key in columnas_requeridas}
-        nuevo_codigo_postal = CodigoPostal(**record_filtered)
-        codigos_postales_nuevos.append(nuevo_codigo_postal)
     
     try:
-        db.bulk_save_objects(codigos_postales_nuevos)
+        db.bulk_insert_mappings(CodigoPostal, records)
         db.commit()
-        total_nuevos = len(codigos_postales_nuevos)
+        total_nuevos = len(records)
         return {"message": f"Datos agregados exitosamente. Se agregaron {total_nuevos} registros."}
     except Exception as e:
         db.rollback()
