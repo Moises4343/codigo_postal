@@ -67,7 +67,7 @@ async def actualizar_datos(archivo: UploadFile = File(None), db: Session = Depen
     try:
         db.query(CodigoPostal).delete()
         db.commit()
-        print("Datos existentes eliminados de la tabla en la DB.")
+        print("Datos existentes retirados de la tabla en la base de datos.")
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error al eliminar datos existentes: {str(e)}")

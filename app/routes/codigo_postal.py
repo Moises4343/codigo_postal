@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.db.models import CodigoPostal
-from app.db.database import get_db
 from pydantic import BaseModel
 from typing import List
+from app.db.models import CodigoPostal
+from app.db.database import get_db
 
 router = APIRouter()
-
 
 class CodigoPostalAttributes(BaseModel):
     estado: str
@@ -21,14 +20,7 @@ class CodigoPostalData(BaseModel):
 class CodigoPostalResponse(BaseModel):
     data: CodigoPostalData
 
-class JSONAPIErrorDetail(BaseModel):
-    status: str
-    title: str
-    detail: str
-
-class JSONAPIErrorResponse(BaseModel):
-    errors: List[JSONAPIErrorDetail]
-
+# Endpoint que utiliza el router
 @router.get("/api/v1/postalCode", response_model=CodigoPostalResponse)
 def get_info_by_postal_code(cp: str, db: Session = Depends(get_db)):
     results = db.query(
