@@ -1,6 +1,9 @@
+#Crear la base de datos y tabla con los columnas
+--> Revisar archivo cp.sql
+
 #Crear archivo .env
 
-DATABASE_URL=mysql+mysqlconnector://usuario:password@localhost/nombre_DB
+--> DATABASE_URL=mysql+mysqlconnector://usuario:password@localhost/sepomex
 
 #Ejecutar el código
 
