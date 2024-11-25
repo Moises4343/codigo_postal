@@ -40,7 +40,7 @@ def backup_to_excel(db: Session, table_model, version, backup_folder="backups"):
     log_entry = {
         "backup_file": backup_filename,
         "version": version,
-        "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        "date": datetime.now().strftime('%Y-%m-%d')
     }
     log_file = os.path.join(backup_folder, "backup_logs.json")
     
