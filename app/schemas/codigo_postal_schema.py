@@ -8,7 +8,7 @@ class CodigoPostalAttributes(BaseModel):
 
 class CodigoPostalData(BaseModel):
     type: str
-    id: str
+    cp: str
     attributes: CodigoPostalAttributes
 
 class CodigoPostalResponse(BaseModel):
