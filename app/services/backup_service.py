@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 import pandas as pd
 from sqlalchemy.orm import Session
+import json
 
 def backup_to_excel(db: Session, table_model, version, backup_folder="backups"):
     os.makedirs(backup_folder, exist_ok=True)
@@ -35,6 +36,23 @@ def backup_to_excel(db: Session, table_model, version, backup_folder="backups"):
     
     with pd.ExcelWriter(backup_filename, engine='openpyxl') as writer:
         df_backup.to_excel(writer, index=False, sheet_name="Backup")
+    
+    log_entry = {
+        "backup_file": backup_filename,
+        "version": version,
+        "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }
+    log_file = os.path.join(backup_folder, "backup_logs.json")
+    
+    if os.path.exists(log_file):
+        with open(log_file, "r") as file:
+            logs = json.load(file)
+    else:
+        logs = []
+    
+    logs.append(log_entry)
+    with open(log_file, "w") as file:
+        json.dump(logs, file, indent=4)
     
     print(f"Respaldo realizado exitosamente en {backup_filename}")
     return backup_filename
